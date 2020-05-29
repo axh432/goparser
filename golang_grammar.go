@@ -2,10 +2,9 @@ package goparser
 
 import (
 	_ "fmt"
-	_ "strings"
 	. "github.com/axh432/gogex"
+	_ "strings"
 )
-
 
 var (
 

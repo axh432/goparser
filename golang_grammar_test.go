@@ -1,11 +1,10 @@
 package goparser
 
 import (
-	"fmt"
+	. "github.com/axh432/gogex"
 	"github.com/stretchr/testify/require"
 	"io/ioutil"
 	"testing"
-	. "github.com/axh432/gogex"
 )
 
 func Test_parse_go(t *testing.T) {
@@ -80,12 +79,8 @@ func Test_parse_go(t *testing.T) {
 	})
 
 	t.Run("function", func(t *testing.T){
-
 		tree := Match("func special() {\n\tvar a = \"initial\"\n}", functionDeclaration)
-
-		fmt.Println(tree.ToMermaidDiagram())
-
-		require.True(t, Match("func special() {\n\tvar a = \"initial\"\n}", functionDeclaration).IsValid)
+		require.True(t, tree.IsValid)
 	})
 
 	t.Run("basic go example", func(t *testing.T){
@@ -93,10 +88,7 @@ func Test_parse_go(t *testing.T) {
 		require.NoError(t, err)
 
 		tree := Match(string(fileAsBytes), basicGo)
-
-		fmt.Println(tree.ToGraphVizDiagram())
-
-		require.True(t, Match(string(fileAsBytes), basicGo).IsValid)
+		require.True(t, tree.IsValid)
 	})
 }
 
