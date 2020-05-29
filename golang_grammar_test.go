@@ -19,15 +19,15 @@ func Test_parse_go(t *testing.T) {
 		require.True(t, Match("func copy(int left, \nint right)", functionSignature).IsValid)
 		require.True(t, Match("func copy(int left, int right, float up)", functionSignature).IsValid)
 		require.True(t, Match("func copy(int left, int right) int", functionSignature).IsValid)
+		require.True(t, Match("func copy(int left, int right) (int)", functionSignature).IsValid)
 		require.True(t, Match("func copy(int left, int right) (dave int)", functionSignature).IsValid)
 		require.True(t, Match("func copy(int left, int right) (int, int)", functionSignature).IsValid)
 		require.True(t, Match("func copy(int left, int right) (dave int, sedric int)", functionSignature).IsValid)
 	})
 
 	t.Run("strings", func(t *testing.T) {
-		result := Match(`"fmt \" line\""`, String)
-		require.True(t, result.IsValid)
-
+		require.True(t, Match(`"fmt \" line\""`, String).IsValid)
+		require.True(t, Match("\"\"", String).IsValid)
 	})
 
 	t.Run("import", func(t *testing.T) {
@@ -83,11 +83,19 @@ func Test_parse_go(t *testing.T) {
 		require.True(t, tree.IsValid)
 	})
 
-	t.Run("basic go example", func(t *testing.T){
+	t.Run("1. Hello World", func(t *testing.T){
+		fileAsBytes, err := ioutil.ReadFile("./go-by-example/hello_world.go")
+		require.NoError(t, err)
+
+		tree := Match(string(fileAsBytes), Golang)
+		require.True(t, tree.IsValid)
+	})
+
+	t.Run("2. Variables", func(t *testing.T){
 		fileAsBytes, err := ioutil.ReadFile("./go-by-example/variables.go")
 		require.NoError(t, err)
 
-		tree := Match(string(fileAsBytes), basicGo)
+		tree := Match(string(fileAsBytes), Golang)
 		require.True(t, tree.IsValid)
 	})
 }
