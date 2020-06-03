@@ -7,6 +7,8 @@ github.com/axh432/gogex v0.0.0-20200529115709-e152d8fc7000 h1:CO1LNAE3UN6mVnk8Ps
 github.com/axh432/gogex v0.0.0-20200529115709-e152d8fc7000/go.mod h1:bJqBtPNWAd6I1Tq8lzOa5jVlB7sJgaeDCI052Jlv2Zs=
 github.com/axh432/gogex v0.0.0-20200529120740-47880a36f56b h1:jD0k4kr2ufexWzFeLz+QgHs8lJHtkLLTP39ZD1yV7YE=
 github.com/axh432/gogex v0.0.0-20200529120740-47880a36f56b/go.mod h1:bJqBtPNWAd6I1Tq8lzOa5jVlB7sJgaeDCI052Jlv2Zs=
+github.com/axh432/gogex v0.0.0-20200602093237-f448b5b07f4c h1:3vDJK1GLwY3HSuaW6MH2ZszkBMAyg6DcYPIw2YCMujk=
+github.com/axh432/gogex v0.0.0-20200602093237-f448b5b07f4c/go.mod h1:bJqBtPNWAd6I1Tq8lzOa5jVlB7sJgaeDCI052Jlv2Zs=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
