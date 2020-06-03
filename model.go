@@ -1,4 +1,4 @@
-package model
+package goparser
 
 import (
 	"fmt"
@@ -68,23 +68,28 @@ func (f *mFunction) toString() string {
 }
 
 type mImport struct {
-	Names []string
+	importAccessType string
+	importName       string
 }
 
-func (i *mImport) toString() string {
+type mImportDeclaration struct {
+	imports []mImport
+}
 
-	lenNames := len(i.Names)
+func (i *mImportDeclaration) toString() string {
 
-	if lenNames < 1 {
+	lenImports := len(i.imports)
+
+	if lenImports < 1 {
 		return ""
-	} else if lenNames == 1 {
-		return fmt.Sprintf("import %s", i.Names[0])
+	} else if lenImports == 1 {
+		return fmt.Sprintf("import %s %s", i.imports[0].importAccessType, i.imports[0].importName)
 	}
 
 	sb := strings.Builder{}
 	sb.WriteString("(")
 
-	for _, name := range i.Names {
+	for _, name := range i.imports {
 		sb.WriteString("\n\t")
 		sb.WriteString(name)
 	}

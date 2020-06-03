@@ -25,10 +25,10 @@ var (
 	quote                            = SetOfCharacters(`"`)
 	dot                              = SetOfCharacters(".")
 	word                             = Range(Letter, 1, -1)
-	String                           = Sequence(quote, Range(Set(SetOfNotCharacters(`"`), SequenceOfCharacters(`\"`)), 0, -1), quote)
-	boolValue                        = Set(SequenceOfCharacters("true"), SequenceOfCharacters("false"))
-	integerValue                     = Range(Number, 1, -1)
-	listOfIntegerValues              = Sequence(integerValue, Range(Sequence(optionalWhitespaceNoNewLineBlock, comma, optionalWhitespaceBlock, integerValue), 0, -1))
+	String                           = Label(Sequence(quote, Range(Set(SetOfNotCharacters(`"`), SequenceOfCharacters(`\"`)), 0, -1), quote), "string")
+	boolValue                        = Label(Set(SequenceOfCharacters("true"), SequenceOfCharacters("false")), "bool")
+	integerValue                     = Label(Range(Number, 1, -1), "integer")
+	listOfIntegerValues              = Label(Sequence(integerValue, Range(Sequence(optionalWhitespaceNoNewLineBlock, comma, optionalWhitespaceBlock, integerValue), 0, -1)), "integerValues")
 
 	//name
 	letterNumberUnderscoreBlock         = Range(Set(Letter, Number, underscore), 1, -1)
@@ -41,20 +41,19 @@ var (
 	returnType   = Label(name, "returntype")
 	functionName = Label(name, "functionName")
 
-	//Import
-	Import                  = SequenceOfCharacters("import")
-	importNameWithSpecifier = Sequence(SetOfCharacters("_."), optionalWhitespaceNoNewLineBlock, String)
-	importNameNoSpecifier   = String
-	importName              = Set(importNameWithSpecifier, importNameNoSpecifier)
-	importMultiple          = Sequence(importName, Range(Sequence(whitespaceAtLeastOneNewLineBlock, importName), 0, -1))
-	importBoundedMultiple   = Sequence(openBracket, optionalWhitespaceBlock, importMultiple, optionalWhitespaceBlock, closedBracket)
-	importBoundedEmpty      = Sequence(openBracket, optionalWhitespaceBlock, closedBracket)
-	importBoundedAll        = Set(importBoundedMultiple, importBoundedEmpty)
-	importSingle            = importName
-	importDeclaration       = Sequence(Import, optionalWhitespaceBlock, Set(importBoundedAll, importSingle))
+	//importKeyword
+	importKeyword         = Label(SequenceOfCharacters("import"), "importKeyword")
+	importAccessType      = Label(Range(SetOfCharacters("_."), 0, 1), "importAccessType")
+	importName            = Label(String, "importName")
+	Import                = Label(Sequence(importAccessType, optionalWhitespaceNoNewLineBlock, importName), "import")
+	importMultiple        = Sequence(Import, Range(Sequence(whitespaceAtLeastOneNewLineBlock, Import), 0, -1))
+	importBoundedMultiple = Sequence(openBracket, optionalWhitespaceBlock, importMultiple, optionalWhitespaceBlock, closedBracket)
+	importBoundedEmpty    = Sequence(openBracket, optionalWhitespaceBlock, closedBracket)
+	importBoundedAll      = Set(importBoundedMultiple, importBoundedEmpty)
+	importSingle          = Import
+	importStatement       = Label(Sequence(importKeyword, optionalWhitespaceBlock, Set(importBoundedAll, importSingle)), "importStatement")
 
-	//Function Signature
-	Func                          = SequenceOfCharacters("func")
+	//Function Parameters
 	parameter                     = Label(Sequence(variableName, whitespaceNoNewLineBlock, typeName), "parameter")
 	functionParametersList        = Sequence(parameter, Range(Sequence(optionalWhitespaceNoNewLineBlock, comma, optionalWhitespaceBlock, parameter), 0, -1))
 	functionParametersBoundedList = Sequence(openBracket, optionalWhitespaceBlock, functionParametersList, optionalWhitespaceNoNewLineBlock, closedBracket)
@@ -70,10 +69,11 @@ var (
 	optionalReturnParameters    = Range(returnParameters, 0, 1)
 
 	//Function Signature
-	functionSignature = Sequence(Func, whitespaceNoNewLineBlock, functionName, optionalWhitespaceNoNewLineBlock, functionParameters, optionalWhitespaceNoNewLineBlock, optionalReturnParameters)
+	Func              = Label(SequenceOfCharacters("func"), "functionKeyword")
+	functionSignature = Label(Sequence(Func, whitespaceNoNewLineBlock, functionName, optionalWhitespaceNoNewLineBlock, functionParameters, optionalWhitespaceNoNewLineBlock, optionalReturnParameters), "functionSignature")
 
 	//Var Assign Statement
-	Var                   = SequenceOfCharacters("var")
+	Var                   = Label(SequenceOfCharacters("var"), "varKeyword")
 	varAssignmentOperator = SetOfCharacters("=")
 	valuePossibilities    = Set(String, boolValue, listOfIntegerValues, functionCall)
 	optionalTypeName      = Range(typeName, 0, 1)
@@ -84,34 +84,34 @@ var (
 	varDeclarationStatement = Sequence(Var, whitespaceBlock, varNames, whitespaceNoNewLineBlock, typeName)
 
 	//Var Statement
-	varStatement = Set(varAssignStatement, varDeclarationStatement)
+	varStatement = Label(Set(varAssignStatement, varDeclarationStatement), "varStatement")
 
 	//Assign Statement
 	assignmentOperator = SequenceOfCharacters(":=")
-	assignStatement    = Sequence(varNames, optionalWhitespaceNoNewLineBlock, assignmentOperator, optionalWhitespaceBlock, valuePossibilities)
+	assignStatement    = Label(Sequence(varNames, optionalWhitespaceNoNewLineBlock, assignmentOperator, optionalWhitespaceBlock, valuePossibilities), "assignStatement")
 
 	//Function Body
-	statement              = Set(varStatement, assignStatement, functionCall)
+	statement              = Label(Set(varStatement, assignStatement, functionCall), "statement")
 	statements             = Sequence(statement, Range(Sequence(whitespaceAtLeastOneNewLineBlock, statement), 0, -1))
 	statementsBounded      = Sequence(openCurlyBrace, optionalWhitespaceBlock, statements, optionalWhitespaceBlock, closedCurlyBrace)
 	statementsBoundedEmpty = Sequence(openCurlyBrace, optionalWhitespaceBlock, closedCurlyBrace)
 	functionBody           = Set(statementsBounded, statementsBoundedEmpty)
 
 	//Function
-	functionDeclaration = Sequence(functionSignature, optionalWhitespaceNoNewLineBlock, functionBody)
+	functionDeclaration = Label(Sequence(functionSignature, optionalWhitespaceNoNewLineBlock, functionBody), "functionDeclaration")
 
 	//Package
 	Package            = SequenceOfCharacters("package")
 	packageName        = Label(name, "packagename")
-	packageDeclaration = Sequence(Package, whitespaceNoNewLineBlock, packageName)
+	packageDeclaration = Label(Sequence(Package, whitespaceNoNewLineBlock, packageName), "packageDeclaration")
 
 	//Basic Golang
-	Golang = Sequence(packageDeclaration, whitespaceAtLeastOneNewLineBlock, importDeclaration, whitespaceAtLeastOneNewLineBlock, functionDeclaration)
+	Golang = Sequence(packageDeclaration, whitespaceAtLeastOneNewLineBlock, importStatement, whitespaceAtLeastOneNewLineBlock, functionDeclaration)
 )
 
 //Function Call
 func functionCall(iter *Iterator) MatchTree {
-	functionCallParameter := Set(variableName, String, functionCall)
+	functionCallParameter := Label(Set(variableName, String, functionCall), "parameter")
 	functionCallParameters := Sequence(functionCallParameter, Range(Sequence(optionalWhitespaceNoNewLineBlock, comma, optionalWhitespaceBlock, functionCallParameter), 0, -1))
 	functionCallParametersBounded := Sequence(openBracket, optionalWhitespaceBlock, functionCallParameters, optionalWhitespaceNoNewLineBlock, closedBracket)
 	functionCallParametersEmpty := Sequence(openBracket, optionalWhitespaceBlock, closedBracket)
