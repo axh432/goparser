@@ -54,10 +54,10 @@ func (sd StructDefinition) printConstructor() string {
 	lw.WriteLine(2, "switch Name {")
 
 	for Name, Type := range sd.Variables {
-		if strings.Contains(Type, "[]") {
-			sd.printArrayVariable(Name, Type, &lw)
+		if Type == "string" {
+			sd.printPrimitiveVariable(Name, Type, &lw)
 		} else {
-			sd.printVariable(Name, Type, &lw)
+			sd.printComplexVariable(Name, Type, &lw)
 		}
 	}
 
@@ -82,7 +82,7 @@ func writeUnknownVariableError(structName string) string {
 }
 
 func writeVariableTypeError(structName string, varName string, varType string) string {
-	errorLine := fmt.Sprintf(`return new%s, errors.New(fmt.Sprintf("The type of the variable '%s' is expected to be: '[STRING_MARKER]'. But found: '[STRING_MARKER]' instead.", %s, Type))`, structName, varName, varType)
+	errorLine := fmt.Sprintf(`return new%s, errors.New(fmt.Sprintf("The type of the variable '%s' is expected to be: '%s'. But found: '[STRING_MARKER]' instead.", Type))`, structName, varName, varType)
 	return replaceStringMarkers(errorLine)
 }
 
@@ -98,11 +98,11 @@ func (ad ArrayDefinition) printConstructor() string {
 	lw.WriteLine(1, "for _, child := range mt.Children {")
 	lw.WriteLine(2, "Name, Type := getNameAndType(child.Label)")
 	lw.WriteLine(2, "switch Name {")
-	lw.WriteLine(2, fmt.Sprintf("case %s:", elementType))
-	lw.WriteLine(3, fmt.Sprintf("if Type == %s {", elementType))
+	lw.WriteLine(2, fmt.Sprintf("case \"%s\":", elementType))
+	lw.WriteLine(3, fmt.Sprintf("if Type == \"%s\" {", elementType))
 	lw.WriteLine(4, fmt.Sprintf("new%s, err := create%s(&child)", elementType, elementType))
 	lw.WriteLine(4, "if err != nil {")
-	lw.WriteLine(5, fmt.Sprintf("return new%s, err", elementType))
+	lw.WriteLine(5, fmt.Sprintf("return new%s, err", ad.Name))
 	lw.WriteLine(4, "}")
 	lw.WriteLine(4, fmt.Sprintf("new%s = append(new%s, new%s)", ad.Name, ad.Name, elementType))
 	lw.WriteLine(3, "}else{")
@@ -117,23 +117,23 @@ func (ad ArrayDefinition) printConstructor() string {
 	return lw.String()
 }
 
-func (sd StructDefinition) printVariable(Name string, Type string, lw *LineWriter) {
-	lw.WriteLine(2, fmt.Sprintf("case %s:", Name))
-	lw.WriteLine(3, fmt.Sprintf("if Type == %s {", Type))
+func (sd StructDefinition) printPrimitiveVariable(Name string, Type string, lw *LineWriter) {
+	lw.WriteLine(2, fmt.Sprintf("case \"%s\":", Name))
+	lw.WriteLine(3, fmt.Sprintf("if Type == \"%s\" {", Type))
 	lw.WriteLine(4, fmt.Sprintf("new%s.%s = child.Value", sd.Name, Name))
 	lw.WriteLine(3, "}else{")
 	lw.WriteLine(4, writeVariableTypeError(sd.Name, Name, Type))
 	lw.WriteLine(3, "}")
 }
 
-func (sd StructDefinition) printArrayVariable(Name string, Type string, lw *LineWriter) {
-	lw.WriteLine(2, fmt.Sprintf("case %s:", Name))
-	lw.WriteLine(3, fmt.Sprintf("if Type == %s {", Type))
-	lw.WriteLine(4, fmt.Sprintf("%s, err := create%s(&child)", Name, Name))
+func (sd StructDefinition) printComplexVariable(Name string, Type string, lw *LineWriter) {
+	lw.WriteLine(2, fmt.Sprintf("case \"%s\":", Name))
+	lw.WriteLine(3, fmt.Sprintf("if Type == \"%s\" {", Type))
+	lw.WriteLine(4, fmt.Sprintf("new%s, err := create%s(&child)", Name, Name))
 	lw.WriteLine(4, "if err != nil {")
 	lw.WriteLine(5, fmt.Sprintf("return new%s, err", sd.Name))
 	lw.WriteLine(4, "}")
-	lw.WriteLine(4, fmt.Sprintf("%s.%s = %s", sd.Name, Name, Name))
+	lw.WriteLine(4, fmt.Sprintf("new%s.%s = new%s", sd.Name, Name, Name))
 	lw.WriteLine(3, "}else{")
 	lw.WriteLine(4, writeVariableTypeError(sd.Name, Name, Type))
 	lw.WriteLine(3, "}")
