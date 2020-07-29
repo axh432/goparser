@@ -1,4 +1,4 @@
-package goparser
+package model
 
 import (
 	"fmt"
@@ -89,9 +89,9 @@ func (i *mImportDeclaration) toString() string {
 	sb := strings.Builder{}
 	sb.WriteString("(")
 
-	for _, name := range i.imports {
+	for _, Import := range i.imports {
 		sb.WriteString("\n\t")
-		sb.WriteString(name)
+		sb.WriteString(Import.importName)
 	}
 
 	sb.WriteString("\n")

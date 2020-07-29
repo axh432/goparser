@@ -1,5 +1,6 @@
 package goparser
 
+/*
 import (
 	"fmt"
 	. "github.com/axh432/gogex"
@@ -190,4 +191,4 @@ func grammarPatternToExpression(pattern string) string {
 
 	sb.WriteString(")")
 	return sb.String()
-}
+}*/

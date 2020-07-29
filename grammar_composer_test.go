@@ -1,5 +1,7 @@
 package goparser
 
+/*
+
 import (
 	"fmt"
 	"github.com/stretchr/testify/require"
@@ -9,14 +11,14 @@ import (
 
 func TestGrammarComposer(t *testing.T) {
 
-	/*t.Run("create expression for import", func(t *testing.T) {
+	t.Run("create expression for import", func(t *testing.T) {
 
 		variants := []string{`import "fmt"`, `import ("fmt")`, "import \n(\"fmt\"\n\"strings\")", "import \n(\"fmt\"\n\"strings\"\n\"strconv\")"}
 
 		expressionAsString := GrammarComposer(variants)
 
 		fmt.Println(expressionAsString)
-	})*/
+	})
 
 	t.Run("create expression for states", func(t *testing.T) {
 
@@ -47,7 +49,7 @@ func TestGrammarComposer(t *testing.T) {
 
 }
 
-/*func Test_grammarIntersect(t *testing.T) {
+func Test_grammarIntersect(t *testing.T) {
 
 	t.Run("intersect grammar", func(t *testing.T) {
 		grammar1 := "a,b,c,d,a,b,c,d,e,f,a,b,a,b,c,d"
@@ -55,7 +57,7 @@ func TestGrammarComposer(t *testing.T) {
 
 	})
 
-}*/
+}
 
 
 func Test_grammarDeduplicate(t *testing.T) {
@@ -75,4 +77,4 @@ func Test_grammarIntersect(t *testing.T) {
 		fmt.Println(intersection)
 	})
 
-}
+}*/
