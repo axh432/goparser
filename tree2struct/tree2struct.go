@@ -17,12 +17,12 @@ type SetOfNotCharactersCall_t struct {
 
 type ExpressionStatement_t struct {
 	ExpressionName     string
-	ExpressionArgument ExpressionArgument_t
+	ExpressionArgument *ExpressionArgument_t
 }
 
 type VarStatement_t struct {
 	Varkeyword  string
-	Expressions []ExpressionStatement_t
+	Expressions []*ExpressionStatement_t
 }
 
 type PackageStatement_t struct {
@@ -37,20 +37,20 @@ type ImportStatement_t struct {
 }
 
 type GogexFile_t struct {
-	PackageStatement PackageStatement_t
-	ImportStatement  ImportStatement_t
-	VarStatement     VarStatement_t
+	PackageStatement *PackageStatement_t
+	ImportStatement  *ImportStatement_t
+	VarStatement     *VarStatement_t
 }
 
 type ExpressionArgument_t struct {
 	ExpressionName           string
-	SequenceCall             SequenceCall_t
-	SequenceOfCharactersCall SequenceOfCharactersCall_t
-	SetOfCharactersCall      SetOfCharactersCall_t
-	SetOfNotCharactersCall   SetOfNotCharactersCall_t
-	SetCall                  SetCall_t
-	RangeCall                RangeCall_t
-	LabelCall                LabelCall_t
+	SequenceCall             *SequenceCall_t
+	SequenceOfCharactersCall *SequenceOfCharactersCall_t
+	SetOfCharactersCall      *SetOfCharactersCall_t
+	SetOfNotCharactersCall   *SetOfNotCharactersCall_t
+	SetCall                  *SetCall_t
+	RangeCall                *RangeCall_t
+	LabelCall                *LabelCall_t
 }
 
 type LabelCall_t struct {
@@ -68,10 +68,10 @@ type RangeCall_t struct {
 
 type SetCall_t struct {
 	SetKeyword          string
-	ExpressionArguments []ExpressionArgument_t
+	ExpressionArguments []*ExpressionArgument_t
 }
 
 type SequenceCall_t struct {
 	SequenceKeyword     string
-	ExpressionArguments []ExpressionArgument_t
+	ExpressionArguments []*ExpressionArgument_t
 }
