@@ -1,4 +1,4 @@
-package goparser
+package modelvisitor
 
 import (
 	"fmt"

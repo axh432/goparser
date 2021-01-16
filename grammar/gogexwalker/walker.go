@@ -6,7 +6,7 @@ import (
 )
 
 func Walk(mt *MatchTree) {
-	fmt.Printf("%s\n", mt.Label)
+	fmt.Printf("%s\n", mt.Labels)
 	for _, child := range mt.Children {
 		Walk(&child)
 	}

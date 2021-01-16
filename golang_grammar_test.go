@@ -41,6 +41,15 @@ func Test_go_grammar(t *testing.T) {
 		require.True(t, Match(`Println(a)`, FunctionCall).IsValid)
 		require.True(t, Match(`fmt.Println(a)`, FunctionCall).IsValid)
 		require.True(t, Match(`fmt.Println(b, c)`, FunctionCall).IsValid)
+
+		tree := Match(`fmt.Println(b, c)`, FunctionCall)
+
+		tree = tree.PruneToLabels()
+
+		fmt.Println(tree.ToMermaidDiagram())
+
+		require.True(t, tree.IsValid)
+
 		require.True(t, Match(`fmt.Println(fmt.Sprintf("hello %d", d), c)`, FunctionCall).IsValid)
 	})
 

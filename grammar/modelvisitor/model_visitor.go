@@ -1,4 +1,4 @@
-package goparser
+package modelvisitor
 
 import (
 	"fmt"
@@ -7,12 +7,43 @@ import (
 
 type StructDefinition struct {
 	Name      string
+	Type      string
 	Variables map[string]string
 }
 
 type ArrayDefinition struct {
 	Name string
 	Type string
+}
+
+type PrimitiveDefinition struct {
+	Name string
+	Type string
+}
+
+type TypeDefinition interface {
+	String() string
+	GetType() string
+}
+
+func (sd StructDefinition) GetType() string {
+	return sd.Type
+}
+
+func (ad ArrayDefinition) GetType() string {
+	return ad.Type
+}
+
+func (pd PrimitiveDefinition) GetType() string {
+	return pd.Type
+}
+
+func (sd StructDefinition) String() string {
+	sb := strings.Builder{}
+	sb.WriteString(sd.printDef())
+	sb.WriteString("\n")
+	sb.WriteString(sd.printConstructor())
+	return sb.String()
 }
 
 func (sd StructDefinition) printDef() string {
@@ -22,6 +53,13 @@ func (sd StructDefinition) printDef() string {
 		lw.WriteLine(1, fmt.Sprintf("%s\t%s", Name, Type))
 	}
 	lw.WriteLine(0, "}")
+
+	sb := strings.Builder{}
+
+	sb.WriteString(lw.String())
+	sb.WriteString("\n")
+	sb.WriteString(sd.printConstructor())
+
 	return lw.String()
 }
 
@@ -54,11 +92,7 @@ func (sd StructDefinition) printConstructor() string {
 	lw.WriteLine(2, "switch Name {")
 
 	for Name, Type := range sd.Variables {
-		if Type == "string" {
-			sd.printPrimitiveVariable(Name, Type, &lw)
-		} else {
-			sd.printComplexVariable(Name, Type, &lw)
-		}
+		sd.printComplexVariable(Name, Type, &lw)
 	}
 
 	lw.WriteLine(2, "default:")
@@ -115,6 +149,22 @@ func (ad ArrayDefinition) printConstructor() string {
 	lw.WriteLine(1, fmt.Sprintf("return new%s, nil", ad.Name))
 	lw.WriteLine(0, "}")
 	return lw.String()
+}
+
+func (ad ArrayDefinition) String() string {
+	return ad.printConstructor()
+}
+
+func (pd PrimitiveDefinition) printConstructor() string {
+	lw := LineWriter{}
+	lw.WriteLine(0, fmt.Sprintf("func create%s(mt *MatchTree) (string, error) {", pd.Name))
+	lw.WriteLine(1, "return mt.Value, nil")
+	lw.WriteLine(0, "}")
+	return lw.String()
+}
+
+func (pd PrimitiveDefinition) String() string {
+	return pd.printConstructor()
 }
 
 func (sd StructDefinition) printPrimitiveVariable(Name string, Type string, lw *LineWriter) {
