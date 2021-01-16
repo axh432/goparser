@@ -52,12 +52,12 @@ func RangeCall(iter *Iterator) MatchTree {
 }
 
 func SetCall(iter *Iterator) MatchTree {
-	args := ConstructDelimitedBoundedList(OpenBracket, ExpressionArgument, Comma, ClosedBracket)
+	args := Label(ConstructDelimitedBoundedList(OpenBracket, ExpressionArgument, Comma, ClosedBracket), "name:ExpressionArguments", "type:[]struct")
 	return Label(Sequence(SetKeyword, OptionalWhitespaceBlock, args), "name:SetCall", "type:struct")(iter)
 }
 
 func SequenceCall(iter *Iterator) MatchTree {
-	args := ConstructDelimitedBoundedList(OpenBracket, ExpressionArgument, Comma, ClosedBracket)
+	args := Label(ConstructDelimitedBoundedList(OpenBracket, ExpressionArgument, Comma, ClosedBracket), "name:ExpressionArguments", "type:[]struct")
 	return Label(Sequence(SequenceKeyword, OptionalWhitespaceBlock, args), "name:SequenceCall", "type:struct")(iter)
 }
 
