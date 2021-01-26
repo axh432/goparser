@@ -25,7 +25,7 @@ func Test_GogexGrammar(t *testing.T) {
 }
 
 func TestRangeCall(t *testing.T) {
-	t.Run("given a range of named expressions return a valid parse tree", func(t *testing.T) {
+	t.Run("given a range of named expressionArgs return a valid parse tree", func(t *testing.T) {
 		tree := Match("Range(BackTick, 1, 2)", RangeCall)
 		labels := tree.PruneToLabels()
 		fmt.Println(labels.ToGraphVizDiagram())
@@ -34,7 +34,7 @@ func TestRangeCall(t *testing.T) {
 }
 
 func TestSequenceCall(t *testing.T) {
-	t.Run("given a sequence of named expressions return a valid parse tree", func(t *testing.T) {
+	t.Run("given a sequence of named expressionArgs return a valid parse tree", func(t *testing.T) {
 		tree := Match("Sequence(BackTick, Something, BackTick)", SequenceCall)
 		fmt.Println(tree.ToMermaidDiagram())
 		require.True(t, tree.IsValid)
